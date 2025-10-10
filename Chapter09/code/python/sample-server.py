@@ -1,0 +1,70 @@
+from mcp.server.fastmcp import Context, FastMCP
+from mcp.server.session import ServerSession
+from mcp.types import SamplingMessage, TextContent
+
+import json
+
+
+from uuid import uuid4
+from typing import List
+from pydantic import BaseModel
+
+mcp = FastMCP(name="Sampling Example")
+
+class Product(BaseModel):
+    id: int
+    name: str
+    description: str
+
+    def __init__(self, name: str, description: str):
+        super().__init__(
+            id=len(products) + 1,
+            name=name,
+            description=description
+        )
+
+products: List[Product] = []
+
+@mcp.tool()
+def get_products() -> list[Product]:
+    """List all products."""
+    return products
+
+# @mcp.tool()
+# def get_products() -> [Product]:
+#     """List all products."""
+#     return [{"type": "text", "name": f"ID: {item.id}, product: {item.name}, description: {item.description}"} for item in products]
+
+@mcp.tool()
+async def create_product(product_name: str, keywords: str, ctx: Context[ServerSession, None]) -> str:
+    """Create a product and generate a product description using LLM sampling."""
+
+    product = Product(name=product_name, description="")
+
+    prompt = f"Create a product description about {product_name} described by as {keywords}"
+
+    result = await ctx.session.create_message(
+        messages=[
+            SamplingMessage(
+                role="user",
+                content=TextContent(type="text", text=prompt),
+            )
+        ],
+        max_tokens=100,
+    )
+
+
+    product.description = result.content.text
+
+    products.append(product)
+
+    # return the complete product
+    return json.dumps({
+        "id": product.id,
+        "name": product.name,
+        "description": product.description
+    })
+
+if __name__ == "__main__":
+    print("Starting server...")
+    mcp.run()
