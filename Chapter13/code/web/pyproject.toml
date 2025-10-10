@@ -1,0 +1,10 @@
+[project]
+name = "web"
+version = "0.1.0"
+description = "my web project"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.116.1",
+    "uvicorn>=0.35.0",
+]
