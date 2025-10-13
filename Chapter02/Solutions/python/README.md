@@ -1,6 +1,6 @@
 # Run the solutions
 
-You are given the solution is steps:
+You are given the solution in steps:
 
 - [Simple solution](./0-vanilla/README.md), this solution only exchanges message between a client and a server
 - [Initialization](./1-initialization/README.md), this solution initializes a connection between client and server using JSON-RPC messages.
