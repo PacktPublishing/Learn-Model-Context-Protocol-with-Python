@@ -7,9 +7,9 @@ mcp = FastMCP("Demo")
 
 # Add a multiply tool
 @mcp.tool()
-def multiply(a: int, b: int) -> int:
-    """Add two numbers"""
-    return a + b
+def multiply(first: int, second: int) -> int:
+    """Multiply two numbers"""
+    return first * second
 
 
 # Add a dynamic greeting resource
